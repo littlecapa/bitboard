@@ -1,4 +1,7 @@
 import chess
+import torch
+import torch.nn as nn
+import numpy as np
 
 COLORS = {
     chess.WHITE: 'white',
@@ -53,12 +56,19 @@ class BitBoard:
         bit_board = []
         for color, _ in COLORS.items():
             for piece, _ in PIECES.items():
-                bit_board.append(self.board.pieces(piece, color))
+                piece_bb = self.board.pieces(piece, color)
+                bit_board.append(piece_bb)
         return bit_board
     
     def get_bit_board(self):
         return self.bit_board
     
+    def get_input_tensor(self):
+        
+        input_tensor = torch.tensor([piece_bb for piece_bb in self.bit_board], dtype=torch.float)
+        input_tensor = input_tensor.view(1, -1)  # Reshape to include the sample size
+        return input_tensor
+
     def bit_board2str(self, bit_board):
         i = 0
         pstr = ""
